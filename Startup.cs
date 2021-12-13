@@ -39,8 +39,6 @@ namespace PromotionMarketing
             services.AddTransient<ProductsService>();
             services.AddTransient<OpsService>();
 
-            services.AddScoped<IProductsService, ProductsService>();
-            services.AddScoped<IOpsService, OpsService>();
 
             services.AddSwaggerGen(c =>
             {

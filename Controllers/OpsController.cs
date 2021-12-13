@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PromotionMarketing.Models;
 using PromotionMarketing.Services;
+using PromotionMarketing.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,13 +14,22 @@ namespace PromotionMarketing.Controllers
     [ApiController]
     public class OpsController : ControllerBase
     {
-        private readonly IOpsService _opsService;
+        private readonly OpsService _opsService;
 
 
-        public OpsController(IOpsService opsService)
+        public OpsController(OpsService opsService)
         {
             _opsService = opsService;
         }
+
+        [HttpPost]
+        public async Task<ActionResult> PostOps([FromBody] OpsVM opsVM)
+        {
+            await _opsService.Create(opsVM);
+            //return CreatedAtAction(nameof(GetOps), new { id = newOp.Id }, newOp);
+            return Ok();
+        }
+
 
         [HttpGet]
         public async Task <IEnumerable<Op>> GetOps()
@@ -33,22 +43,17 @@ namespace PromotionMarketing.Controllers
             return await _opsService.Get(id);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<Op>> PostOps([FromBody] Op op)
-        {
-            var newOp = await _opsService.Create(op);
-            return CreatedAtAction(nameof(GetOps), new { id = newOp.Id }, newOp);
-        }
+
 
         [HttpPut]
-        public async Task<ActionResult> PutOps(int id, [FromBody] Op op)
+        public async Task<ActionResult> PutOps(int id, [FromBody] OpsVM opsVM)
         {
-            if (id != op.Id)
+            if (id != opsVM.Id)
             {
                 return BadRequest();
             }
 
-            await _opsService.Update(op);
+            await _opsService.Update(opsVM);
 
             return Ok("Updated successfully ...!");
         }

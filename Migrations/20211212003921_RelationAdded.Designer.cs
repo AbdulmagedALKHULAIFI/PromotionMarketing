@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PromotionMarketing.Data;
 
 namespace PromotionMarketing.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211212003921_RelationAdded")]
+    partial class RelationAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,63 +58,33 @@ namespace PromotionMarketing.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Price")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("PromotionMarketing.Models.Product_Op", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
                     b.Property<int>("OpId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProductId")
+                    b.Property<int>("Price")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("OpId");
 
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("Products_Ops");
-                });
-
-            modelBuilder.Entity("PromotionMarketing.Models.Product_Op", b =>
-                {
-                    b.HasOne("PromotionMarketing.Models.Op", "Op")
-                        .WithMany("Product_Ops")
-                        .HasForeignKey("OpId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PromotionMarketing.Models.Product", "Product")
-                        .WithMany("Product_Ops")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Op");
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("PromotionMarketing.Models.Op", b =>
-                {
-                    b.Navigation("Product_Ops");
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("PromotionMarketing.Models.Product", b =>
                 {
-                    b.Navigation("Product_Ops");
+                    b.HasOne("PromotionMarketing.Models.Op", "Op")
+                        .WithMany("Products")
+                        .HasForeignKey("OpId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Op");
+                });
+
+            modelBuilder.Entity("PromotionMarketing.Models.Op", b =>
+                {
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

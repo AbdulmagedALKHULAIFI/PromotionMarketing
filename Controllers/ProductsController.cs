@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PromotionMarketing.Models;
 using PromotionMarketing.Services;
+using PromotionMarketing.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +14,9 @@ namespace PromotionMarketing.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly IProductsService _productsService;
+        private readonly ProductsService _productsService;
 
-        public ProductsController(IProductsService productsService)
+        public ProductsController(ProductsService productsService)
         {
             _productsService = productsService;
         }
@@ -33,21 +34,22 @@ namespace PromotionMarketing.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Product>> PostProducts([FromBody] Product product)
+        public async Task<ActionResult> PostProducts([FromBody] ProductsVM productVM)
         {
-            var newProduct = await _productsService.Create(product);
-            return CreatedAtAction(nameof(GetProducts), new { id = newProduct.Id }, newProduct);
+            await _productsService.Create(productVM);
+            //return CreatedAtAction(nameof(GetProducts), new { id = newProduct.Id }, newProduct);
+            return Ok();
         }
 
         [HttpPut]
-        public async Task<ActionResult> PutProducts(int id, [FromBody] Product product)
+        public async Task<ActionResult> PutProducts(int id, [FromBody] ProductsVM productVM)
         {
-            if (id != product.Id)
+            if (id != productVM.Id)
             {
                 return BadRequest();
             }
 
-            await _productsService.Update(product);
+            await _productsService.Update(productVM);
 
             return Ok("Updated successfully ...!");
         }
